@@ -1111,6 +1111,15 @@ impl CStore {
             // allocator. At this point our allocator request is typically fulfilled
             // by the standard library, denoted by the `#![default_lib_allocator]`
             // attribute.
+            //
+            // SBPF targets with static syscalls have no `sol_alloc_free_` syscall
+            // to back std's default allocator, so programs must provide their own.
+            #[allow(rustc::symbol_intern_string_literal)]
+            let static_syscalls = Symbol::intern("static-syscalls");
+            if tcx.sess.target.is_like_solana && tcx.sess.target_features.contains(&static_syscalls)
+            {
+                tcx.dcx().emit_err(errors::SolanaDefaultAllocator);
+            }
             if !attr::contains_name(&krate.attrs, sym::default_lib_allocator)
                 && !self.iter_crate_data().any(|(_, data)| data.has_default_lib_allocator())
             {

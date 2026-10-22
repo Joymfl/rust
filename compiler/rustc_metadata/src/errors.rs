@@ -234,6 +234,13 @@ pub struct ConflictingAllocErrorHandler {
 pub struct GlobalAllocRequired;
 
 #[derive(Diagnostic)]
+#[diag("no `#[global_allocator]` found; the default allocator is not available on this SBPF target")]
+#[help(
+    "add `#[global_allocator]` to a static item that implements the GlobalAlloc trait (e.g. via `solana_program::entrypoint!` or `pinocchio::no_allocator!`)"
+)]
+pub struct SolanaDefaultAllocator;
+
+#[derive(Diagnostic)]
 #[diag(
     "the crate `{$crate_name}` cannot depend on a crate that needs {$needs_crate_name}, but it depends on `{$deps_crate_name}`"
 )]
