@@ -1114,9 +1114,7 @@ impl CStore {
             //
             // SBPF targets with static syscalls have no `sol_alloc_free_` syscall
             // to back std's default allocator, so programs must provide their own.
-            #[allow(rustc::symbol_intern_string_literal)]
-            let static_syscalls = Symbol::intern("static-syscalls");
-            if tcx.sess.target.is_like_solana && tcx.sess.target_features.contains(&static_syscalls)
+            if tcx.sess.target.is_like_solana
             {
                 tcx.dcx().emit_err(errors::SolanaDefaultAllocator);
             }
